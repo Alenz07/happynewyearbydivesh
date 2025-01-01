@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year 2025!</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #000033;
+            color: #FFD700;
+            overflow: hidden;
+        }
+        #matrix-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+        }
+        #loader-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #new-year-scene {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: none;
+            perspective: 1000px;
+        }
+        #new-year-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateX(20deg) rotateY(0);
+            font-size: 60px;
+            font-weight: bold;
+            text-align: center;
+            animation: rotate 10s infinite linear;
+            text-shadow: 0 0 10px #FF0000, 0 0 20px #0000FF, 0 0 30px #FFD700;
+        }
+        @keyframes rotate {
+            0% { transform: translate(-50%, -50%) rotateX(20deg) rotateY(0); }
+            100% { transform: translate(-50%, -50%) rotateX(20deg) rotateY(360deg); }
+        }
+        #celebration-snippet {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre;
+            color: #FF0000;
+        }
+        #quote-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: rgba(0, 0, 255, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 300px;
+            text-align: center;
+            font-style: italic;
+        }
+        #stick-animation {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 100px;
+            height: 100px;
+        }
+        #fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="matrix-loader">
+        <canvas id="matrix-canvas"></canvas>
+        <div id="loader-text">Loading: 0%</div>
+    </div>
+    <div id="new-year-scene">
+        <div id="new-year-text">
+            HAPPY<br>NEW YEAR<br>2025!
+        </div>
+    </div>
+    <div id="celebration-snippet"></div>
+    <div id="quote-container"></div>
+    <canvas id="stick-animation"></canvas>
+    <canvas id="fireworks"></canvas>
+
+    <script>
+        // Matrix loader
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        const loaderText = document.getElementById('loader-text');
+        const newYearScene = document.getElementById('new-year-scene');
+        const celebrationSnippet = document.getElementById('celebration-snippet');
+        const quoteContainer = document.getElementById('quote-container');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const columns = canvas.width / 20;
+        const drops = [];
+
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 51, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#FF0000';
+            ctx.font = '15px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = String.fromCharCode(Math.floor(Math.random() * 128));
+                ctx.fillText(text, i * 20, drops[i] * 20);
+
+                if (drops[i] * 20 > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+
+                drops[i]++;
+            }
+        }
+
+        let progress = 0;
+        const loadingInterval = setInterval(() => {
+            progress += Math.random() * 10;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(loadingInterval);
+                setTimeout(() => {
+                    document.getElementById('matrix-loader').style.display = 'none';
+                    newYearScene.style.display = 'block';
+                    startFireworks();
+                }, 1000);
+            }
+            loaderText.textContent = `Loading: ${Math.floor(progress)}%`;
+        }, 200);
+
+        setInterval(drawMatrix, 33);
+
+        // ASCII Art Celebration Snippets
+        const asciiSnippets = [
+            `
+   *    *
+  ***  ***
+ **********
+    ****
+  ********
+ **********
+            `,
+            `
+   _____
+  /     \\
+ /       \\
+|  HAPPY  |
+|   NEW   |
+|  YEAR!  |
+ \\       /
+  \\_____/
+            `,
+            `
+    /\\
+   /  \\
+  /    \\
+ /______\\
+   |  |
+   |  |
+   |  |
+  /____\\
+ /      \\
+/        \\
+            `
+        ];
+
+        let currentSnippet = 0;
+        function updateCelebrationSnippet() {
+            celebrationSnippet.textContent = asciiSnippets[currentSnippet];
+            currentSnippet = (currentSnippet + 1) % asciiSnippets.length;
+        }
+
+        setInterval(updateCelebrationSnippet, 3000);
+        updateCelebrationSnippet();
+
+        // Heartwarming Quotes
+        const quotes = [
+            "Cheers to a new year and another chance for us to get it right. - Oprah Winfrey",
+            "Tomorrow is the first blank page of a 365-page book. Write a good one. - Brad Paisley",
+            "The best is yet to come. - Frank Sinatra",
+            "A new year is like a blank book. The pen is in your hands. - Melody Beattie",
+            "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt"
+        ];
+
+        function updateQuote() {
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            quoteContainer.textContent = randomQuote;
+        }
+
+        setInterval(updateQuote, 5000);
+        updateQuote();
+
+        // Stick Figure Animation
+        const stickCanvas = document.getElementById('stick-animation');
+        const stickCtx = stickCanvas.getContext('2d');
+
+        stickCanvas.width = 100;
+        stickCanvas.height = 100;
+
+        let angle = 0;
+
+        function drawStickFigure() {
+            stickCtx.clearRect(0, 0, stickCanvas.width, stickCanvas.height);
+            stickCtx.strokeStyle = '#FFD700';
+            stickCtx.lineWidth = 2;
+
+            // Head
+            stickCtx.beginPath();
+            stickCtx.arc(50, 25, 10, 0, Math.PI * 2);
+            stickCtx.stroke();
+
+            // Body
+            stickCtx.beginPath();
+            stickCtx.moveTo(50, 35);
+            stickCtx.lineTo(50, 60);
+            stickCtx.stroke();
+
+            // Arms
+            stickCtx.beginPath();
+            stickCtx.moveTo(50, 45);
+            stickCtx.lineTo(30, 40 + Math.sin(angle) * 10);
+            stickCtx.moveTo(50, 45);
+            stickCtx.lineTo(70, 40 + Math.sin(angle + Math.PI) * 10);
+            stickCtx.stroke();
+
+            // Legs
+            stickCtx.beginPath();
+            stickCtx.moveTo(50, 60);
+            stickCtx.lineTo(40, 80 + Math.sin(angle) * 5);
+            stickCtx.moveTo(50, 60);
+            stickCtx.lineTo(60, 80 + Math.sin(angle + Math.PI) * 5);
+            stickCtx.stroke();
+
+            angle += 0.1;
+        }
+
+        setInterval(drawStickFigure, 50);
+
+        // Fireworks
+        const fireworksCanvas = document.getElementById('fireworks');
+        const fireworksCtx = fireworksCanvas.getContext('2d');
+
+        fireworksCanvas.width = window.innerWidth;
+        fireworksCanvas.height = window.innerHeight;
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.radius = Math.random() * 2 + 1;
+                this.velocity = {
+                    x: Math.random() * 6 - 3,
+                    y: Math.random() * 6 - 3
+                };
+                this.life = 100;
+            }
+
+            draw() {
+                fireworksCtx.beginPath();
+                fireworksCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                fireworksCtx.fillStyle = this.color;
+                fireworksCtx.fill();
+            }
+
+            update() {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.life--;
+                this.draw();
+            }
+        }
+
+        let particles = [];
+
+        function createFirework(x, y) {
+            const colors = ['#FF0000', '#0000FF', '#FFD700', '#FF00FF', '#00FFFF'];
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)]));
+            }
+        }
+
+        function animateFireworks() {
+            fireworksCtx.fillStyle = 'rgba(0, 0, 51, 0.2)';
+            fireworksCtx.fillRect(0, 0, fireworksCanvas.width, fireworksCanvas.height);
+
+            particles = particles.filter(particle => particle.life > 0);
+            particles.forEach(particle => particle.update());
+
+            if (Math.random() < 0.05) {
+                createFirework(Math.random() * fireworksCanvas.width, Math.random() * fireworksCanvas.height / 2);
+            }
+
+            requestAnimationFrame(animateFireworks);
+        }
+
+        function startFireworks() {
+            animateFireworks();
+        }
+    </script>
+</body>
+</html>
